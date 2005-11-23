@@ -511,6 +511,7 @@ from
 		where
 			uom_id=:task_uom_id
 			and currency=:currency
+			and p.company_id != [im_company_internal]
 		)
 	) pr,
 	im_companies c
