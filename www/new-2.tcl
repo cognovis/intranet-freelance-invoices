@@ -89,7 +89,7 @@ set button_text "[_ intranet-trans-invoices.lt_Create_Purchase_Order]"
 set page_title "[_ intranet-trans-invoices.New_Purchase_Order]"
 set context_bar [im_context_bar [list /intranet/invoices/ "[_ intranet-trans-invoices.Purchase_Orders]"] $page_title]
 set invoice_id [im_new_object_id]
-set invoice_nr [im_next_invoice_nr]
+set invoice_nr [im_next_invoice_nr -invoice_type_id $target_cost_type_id]
 set invoice_date $todays_date
 set payment_days [ad_parameter -package_id [im_package_cost_id] "DefaultProviderBillPaymentDays" "" 30] 
 set vat 0
