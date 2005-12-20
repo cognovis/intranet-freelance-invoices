@@ -72,6 +72,7 @@ order by
   <fullquery name="references_prices">
     <querytext>
 select 
+	pr.price_id,
 	pr.relevancy as price_relevancy,
 	to_char(pr.price, :number_format) as price,
 	pr.company_id as price_company_id,
@@ -82,6 +83,7 @@ select
 	pr.subject_area_id as subject_area_id,
 	pr.valid_from,
 	pr.valid_through,
+	pr.price_note,
 	c.company_path as price_company_name,
         im_category_from_id(pr.uom_id) as price_uom,
         im_category_from_id(pr.task_type_id) as price_task_type,
@@ -98,6 +100,7 @@ from
 				p.target_language_id, :target_language_id,
 				p.source_language_id, :source_language_id
 			) as relevancy,
+			p.price_id,
 			p.price,
 			p.company_id as company_id,
 			p.uom_id,
@@ -106,7 +109,8 @@ from
 			p.source_language_id,
 			p.subject_area_id,
 			p.valid_from,
-			p.valid_through
+			p.valid_through,
+			p.note as price_note
 		from im_trans_prices p
 		where
 			uom_id=:task_uom_id

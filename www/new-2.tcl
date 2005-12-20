@@ -41,6 +41,8 @@ set todays_date [db_string get_today "select to_char(sysdate,'YYYY-MM-DD') from 
 set page_focus "im_header_form.keywords"
 set view_name "invoice_tasks"
 
+set price_url_base "/intranet-trans-invoices/price-lists/new"
+
 set bgcolor(0) " class=roweven"
 set bgcolor(1) " class=rowodd"
 
@@ -397,9 +399,9 @@ if {[string equal $invoice_mode "new"]} {
           <td class=rowtitle>[_ intranet-trans-invoices.Target]</td>
           <td class=rowtitle>[_ intranet-trans-invoices.Source]</td>
           <td class=rowtitle>[_ intranet-trans-invoices.Subject_Area]</td>
+          <td class=rowtitle>[_ intranet-core.Note]</td>
           <td class=rowtitle>[_ intranet-trans-invoices.Price]</td>
         </tr>\n"
-
 
 
     # Calculate the sum of tasks (distinct by TaskType and UnitOfMeasure)
@@ -430,106 +432,11 @@ group by
 "
 
 
-    # Take the "Inner Query" with the data (above) and add some "long names" 
-    # (categories, client names, ...) for pretty output
-    set task_sum_sql "
-select
-	to_char(s.task_sum, :number_format) as task_sum,
-	s.task_type_id,
-	s.subject_area_id,
-	s.source_language_id,
-	s.target_language_id,
-	s.task_uom_id,
-	c_type.category as task_type,
-	c_uom.category as task_uom,
-	c_target.category as target_language,
-	s.project_id,
-	p.project_name,
-	p.project_path,
-	p.project_path as project_short_name,
-	p.company_project_nr as company_project_nr
-from
-	im_categories c_uom,
-	im_categories c_type,
-	im_categories c_target,
-	im_projects p,
-	($task_sum_inner_sql) s
-where
-	s.task_type_id=c_type.category_id(+)
-	and s.task_uom_id=c_uom.category_id(+)
-	and s.target_language_id=c_target.category_id(+)
-	and s.project_id=p.project_id(+)
-order by
-	p.project_id
-    "
-
-
-    # Calculate the price for the specific service.
-    # Complicated undertaking, because the price depends on a number of variables,
-    # depending on client etc. As a solution, we act like a search engine, return 
-    # all prices and rank them according to relevancy. We take only the first 
-    # (=highest rank) line for the actual price proposal.
-    #
-    set reference_price_sql "
-select 
-	pr.relevancy as price_relevancy,
-	to_char(pr.price, :number_format) as price,
-	pr.company_id as price_company_id,
-	pr.uom_id as uom_id,
-	pr.task_type_id as task_type_id,
-	pr.target_language_id as target_language_id,
-	pr.source_language_id as source_language_id,
-	pr.subject_area_id as subject_area_id,
-	pr.valid_from,
-	pr.valid_through,
-	c.company_path as price_company_name,
-        im_category_from_id(pr.uom_id) as price_uom,
-        im_category_from_id(pr.task_type_id) as price_task_type,
-        im_category_from_id(pr.target_language_id) as price_target_language,
-        im_category_from_id(pr.source_language_id) as price_source_language,
-        im_category_from_id(pr.subject_area_id) as price_subject_area
-from
-	(
-		(select 
-			im_trans_prices_calc_relevancy (
-				p.company_id, :provider_id,
-				p.task_type_id, :task_type_id,
-				p.subject_area_id, :subject_area_id,
-				p.target_language_id, :target_language_id,
-				p.source_language_id, :source_language_id
-			) as relevancy,
-			p.price,
-			p.company_id as company_id,
-			p.uom_id,
-			p.task_type_id,
-			p.target_language_id,
-			p.source_language_id,
-			p.subject_area_id,
-			p.valid_from,
-			p.valid_through
-		from im_trans_prices p
-		where
-			uom_id=:task_uom_id
-			and currency=:currency
-			and p.company_id != [im_company_internal]
-		)
-	) pr,
-	im_companies c
-where
-	pr.company_id = c.company_id(+)
-	and relevancy >= 0
-order by
-	pr.relevancy desc,
-	pr.company_id,
-	pr.uom_id
-    "
-
-
     set ctr 1
     set old_project_id 0
     set colspan 6
     set target_language_id ""
-    db_foreach task_sum $task_sum_sql {
+    db_foreach task_sum "" {
 
 	# insert intermediate headers for every project
 	if {$old_project_id != $project_id} {
@@ -553,21 +460,28 @@ order by
 	# and render the "reference price list"
 	set price_list_ctr 1
 	set best_match_price 0
-	db_foreach references_prices $reference_price_sql {
+	db_foreach references_prices "" {
 
 	    ns_log Notice "new-3: company_id=$provider_id, uom_id=$uom_id => price=$price, relevancy=$price_relevancy"
 	    # Take the first line of the result list (=best score) as a price proposal:
 	    if {$price_list_ctr == 1} {set best_match_price $price}
 
+            set price_url [export_vars -base $price_url_base { company_id price_id return_url }]
+
 	    append reference_price_html "
         <tr>
-          <td class=$bgcolor([expr $price_list_ctr % 2])>$price_company_name</td>
+          <td class=$bgcolor([expr $price_list_ctr % 2])>
+            <a href=\"[export_vars -base "/intranet/companies/view" { {company_id $price_company_id} }]\">$price_company_name</a>
+	  </td>
           <td class=$bgcolor([expr $price_list_ctr % 2])>$price_uom</td>
           <td class=$bgcolor([expr $price_list_ctr % 2])>$price_task_type</td>
           <td class=$bgcolor([expr $price_list_ctr % 2])>$price_target_language</td>
           <td class=$bgcolor([expr $price_list_ctr % 2])>$price_source_language</td>
           <td class=$bgcolor([expr $price_list_ctr % 2])>$price_subject_area</td>
-          <td class=$bgcolor([expr $price_list_ctr % 2])>$price $currency</td>
+          <td class=$bgcolor([expr $price_list_ctr % 2])>[string_truncate -len 20 $price_note]</td>
+          <td class=$bgcolor([expr $price_list_ctr % 2])>
+                <a href=\"$price_url\">$price $currency</a>
+	  </td>
         </tr>\n"
 	
 	    incr price_list_ctr
