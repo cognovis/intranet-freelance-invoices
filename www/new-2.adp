@@ -70,12 +70,8 @@
 	          <td  class=roweven>@vat_number@</td>
 	        </tr>
 	        <tr> 
-	          <td  class=rowodd> Accounting Contact</td>
-	          <td  class=rowodd>
-	            <A href="/intranet/users/view?user_id=@accounting_contact_id@">
-		      @company_contact_name@
-		    </A>
-	          </td>
+	          <td  class=rowodd>#intranet-core.Contact#</td>
+	          <td  class=rowodd>@company_contact_select;noquote@</td>
 	        </tr>
 	        <tr> 
 	          <td  class=roweven>Adress</td>

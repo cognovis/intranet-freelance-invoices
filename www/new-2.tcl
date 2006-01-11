@@ -109,8 +109,6 @@ db_1row invoices_info_query "
 select 
 	c.*,
         o.*,
-	im_email_from_user_id(c.accounting_contact_id) as company_contact_email,
-	im_name_from_user_id(c.accounting_contact_id) as  company_contact_name,
 	c.company_name as company_name,
 	c.company_path as company_path,
 	c.company_path as company_short_name,
@@ -125,6 +123,9 @@ where
         and o.address_country_code=cc.iso(+)
 "
 
+set project_id ""
+set company_contact_id [im_invoices_default_company_contact $provider_id $project_id]
+set company_contact_select [im_company_contact_select company_contact_id $company_contact_id $company_id]
 
 # ---------------------------------------------------------------
 # Select and process the trans, edit, proof and other services
