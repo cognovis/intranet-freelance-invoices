@@ -36,39 +36,6 @@ where
     </querytext>
   </fullquery>
 
-  <fullquery name="task_sum">
-    <querytext>
-select
-        trim(both ' ' from to_char(s.task_sum, :number_format)) as task_sum,
-        s.task_type_id,
-        s.subject_area_id,
-        s.source_language_id,
-        s.target_language_id,
-        s.task_uom_id,
-        c_type.category as task_type,
-        c_uom.category as task_uom,
-        c_target.category as target_language,
-        s.project_id,
-        p.project_name,
-        p.project_path,     
-        p.project_path as project_short_name,
-        p.company_project_nr as company_project_nr
-from
-        ($task_sum_inner_sql) s
-      LEFT JOIN
-        im_categories c_type ON s.task_type_id=c_type.category_id
-      LEFT JOIN
-        im_categories c_uom ON s.task_uom_id=c_uom.category_id
-      LEFT JOIN
-        im_categories c_target ON s.target_language_id=c_target.category_id
-      LEFT JOIN
-        im_projects p USING (project_id)
-order by
-        p.project_id
-
-    </querytext>
-  </fullquery>
-
   <fullquery name="references_prices">
     <querytext>
 select 
@@ -114,7 +81,13 @@ from
 		from im_trans_prices p
 		where
 			uom_id=:task_uom_id
-			and currency=:currency
+			and currency = :currency
+			and p.company_id not in (
+				select company_id
+				from im_companies
+				where company_path = 'internal'
+			)
+
 		)
 	) pr
       LEFT JOIN

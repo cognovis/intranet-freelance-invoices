@@ -178,6 +178,9 @@ db_foreach task_tasks $task_sql {
 	    append task_html "
 		<tr class=rowplain>
 		  <td colspan=$task_colspan align=right>
+
+		    <input type=checkbox name=aggregate_tasks_p value=1 checked>
+		    [lang::message::lookup "" intranet-trans-invoices.Aggregate_tasks "Aggregate Tasks?"]
 		    <input type=submit value=Submit>  
 		  </td>
 		</tr>
@@ -232,9 +235,11 @@ db_foreach task_tasks $task_sql {
 if {$ctr > 1} {
 
     append task_html "
-	<tr>
+	<tr class=rowplain>
 	  <td colspan=$task_colspan align=right>
-	    <input type=submit value=\"[_ intranet-trans-invoices.Submit]\">  
+	    <input type=checkbox name=aggregate_tasks_p value=1 checked>
+	    [lang::message::lookup "" intranet-trans-invoices.Aggregate_tasks "Aggregate Tasks?"]
+	    <input type=submit value=Submit>
 	  </td>
 	</tr>\n"
 
@@ -244,9 +249,9 @@ if {$ctr > 1} {
     append task_html "
 	<tr>
 	  <td colspan=$task_colspan align=center>
-            &nbsp;<br>
+	    &nbsp;<br>
 	    [_ intranet-trans-invoices.No_Trans_Tasks]
-            <br>&nbsp;
+	    <br>&nbsp;
 	  </td>
 	</tr>\n"
 
