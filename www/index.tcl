@@ -47,6 +47,8 @@ if {0 == $project_id } {
     ad_returnredirect project-select?[export_url_vars return_url]
 }
 
+set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
+
 # ---------------------------------------------------------------------
 # Select and format the list of tasks
 # ---------------------------------------------------------------------
@@ -178,7 +180,7 @@ db_foreach task_tasks $task_sql {
 	    append task_html "
 		<tr class=rowplain>
 		  <td colspan=$task_colspan align=right>
-
+		    [_ intranet-trans-invoices.Invoice_Currency]: [im_currency_select currency $default_currency]
 		    <input type=checkbox name=aggregate_tasks_p value=1 checked>
 		    [lang::message::lookup "" intranet-trans-invoices.Aggregate_tasks "Aggregate Tasks?"]
 		    <input type=submit value=Submit>  
