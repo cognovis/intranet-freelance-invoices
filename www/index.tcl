@@ -239,6 +239,7 @@ if {$ctr > 1} {
     append task_html "
 	<tr class=rowplain>
 	  <td colspan=$task_colspan align=right>
+	    [_ intranet-trans-invoices.Invoice_Currency]: [im_currency_select currency $default_currency]
 	    <input type=checkbox name=aggregate_tasks_p value=1 checked>
 	    [lang::message::lookup "" intranet-trans-invoices.Aggregate_tasks "Aggregate Tasks?"]
 	    <input type=submit value=Submit>
