@@ -192,7 +192,7 @@ db_foreach task_tasks $task_sql {
 
 	append task_html "
 	<form method=POST action=new-2>
-	[export_form_vars freelance_id target_cost_type_id target_cost_status_id return_url]
+	[export_form_vars freelance_id target_cost_type_id target_cost_status_id project_id return_url]
 	<table border=0>
 	  <tr>
 	    <td class=rowtitle align=center>[_ intranet-trans-invoices.Task_Name]</td>

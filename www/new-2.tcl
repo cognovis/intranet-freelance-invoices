@@ -23,6 +23,7 @@ ad_page_contract {
     provider_id:integer
     freelance_id:integer
     target_cost_type_id:integer
+    { project_id:integer "" }
     { aggregate_tasks_p 0}
     { target_cost_status_id:integer 0 }
     { currency "EUR" }
@@ -110,10 +111,19 @@ set default_invoice_template_id ""
 
 db_1row invoices_info_query ""
 
-set project_id ""
-set company_contact_id [im_invoices_default_company_contact $provider_id $project_id]
+# "select_project" is the list of projects to which
+# this invoice relates. Here it is only a single project.
+#
+set select_project $project_id
+
+# Use the version _without_ project_id here, because we're on the 
+# provider side, not on the customer's side of the project.
+set company_contact_id [im_invoices_default_company_contact $provider_id]
+
 set company_contact_select [im_company_contact_select company_contact_id $company_contact_id $company_id]
 
+
+# ad_return_complaint 1 "<pre>company_contact_id=$company_contact_id</pre>"
 
 if {[info exists default_invoice_template_id] && 0 != $default_invoice_template_id} {
 
