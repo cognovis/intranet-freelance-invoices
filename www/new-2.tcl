@@ -123,7 +123,7 @@ set select_project $project_id
 
 # Use the version _without_ project_id here, because we're on the 
 # provider side, not on the customer's side of the project.
-set company_contact_id [im_invoices_default_company_contact $provider_id]
+set company_contact_id [im_invoices_default_company_contact -cost_type_id $target_cost_type_id -provider_id $provider_id]
 
 set company_contact_select [im_company_contact_select company_contact_id $company_contact_id $company_id]
 
