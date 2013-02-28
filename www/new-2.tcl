@@ -368,7 +368,7 @@ if {$aggregate_tasks_p} {
 	  <td class=rowtitle>[_ intranet-freelance-invoices.XTr]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Rep]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Perf]</td>
-	  <td class=rowtitle>[_ intranet-freelance-invoices.Cft]</td>
+	  <td class=rowtitle>[_ intranet-freelance-invoices.Cfr]</td>
 	  <td class=rowtitle>100 %</td>
 	  <td class=rowtitle>95 %</td>
 	  <td class=rowtitle>85 %</td>
@@ -412,7 +412,7 @@ if {$aggregate_tasks_p} {
 	  <td align=right>$match_x</td>
 	  <td align=right>$match_rep</td>
 	  <td align=right>$match_perf</td>
-	  <td align=right>$match_cft</td>
+	  <td align=right>$match_cfr</td>
 	  <td align=right>$match100</td>
 	  <td align=right>$match95</td>
 	  <td align=right>$match85</td>
