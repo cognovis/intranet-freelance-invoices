@@ -240,7 +240,7 @@ set edit_tasks_inner_sql "
 		(	tt.match_x +
 			tt.match_rep +
 			tt.match_perf +
-			tt.match_cft +
+			tt.match_cfr +
 			tt.match100 +
 			tt.match95 +
 			tt.match85 +
