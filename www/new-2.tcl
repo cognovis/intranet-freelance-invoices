@@ -375,10 +375,10 @@ if {$aggregate_tasks_p} {
 	  <td class=rowtitle>75 %</td>
 	  <td class=rowtitle>50 %</td>
 	  <td class=rowtitle>0 %</td>
-	  <td class=rowtitle>f95 %</td>
-	  <td class=rowtitle>f85 %</td>
-	  <td class=rowtitle>f75 %</td>
-	  <td class=rowtitle>f50 %</td>
+	  <td class=rowtitle>[lang::message::lookup "" intranet-freelance-invoice.f95 "Int<br>95"] %</td>
+	  <td class=rowtitle>[lang::message::lookup "" intranet-freelance-invoice.f85 "Int<br>85"] %</td>
+	  <td class=rowtitle>[lang::message::lookup "" intranet-freelance-invoice.f75 "Int<br>75"] %</td>
+	  <td class=rowtitle>[lang::message::lookup "" intranet-freelance-invoice.f50 "Int<br>50"] %</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Units]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Type]</td>
 	</tr>
