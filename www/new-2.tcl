@@ -190,12 +190,18 @@ set trans_tasks_inner_sql "
 		[im_project_type_trans] as po_task_type_id,
 		(	tt.match_x * $provider_matrix(x) +
 			tt.match_rep * $provider_matrix(rep) +
+			tt.match_perf * $provider_matrix(perf) +
+			tt.match_cfr * $provider_matrix(cfr) +
 			tt.match100 * $provider_matrix(100) +
 			tt.match95 * $provider_matrix(95) +
 			tt.match85 * $provider_matrix(85) +
 			tt.match75 * $provider_matrix(75) +
 			tt.match50 * $provider_matrix(50) +
-			tt.match0 * $provider_matrix(0) 
+			tt.match0 * $provider_matrix(0) +
+			tt.match_f95 * $provider_matrix(f95) +
+			tt.match_f85 * $provider_matrix(f85) +
+			tt.match_f75 * $provider_matrix(f75) +
+			tt.match_f50 * $provider_matrix(f50)
 		) as po_billable_units,
 		tt.task_uom_id as po_task_uom_id
 	from	im_trans_tasks tt
@@ -233,12 +239,19 @@ set edit_tasks_inner_sql "
 		[im_project_type_edit] as po_task_type_id,
 		(	tt.match_x +
 			tt.match_rep +
+			tt.match_perf +
+			tt.match_cft +
 			tt.match100 +
 			tt.match95 +
 			tt.match85 +
 			tt.match75 +
 			tt.match50 +
-			tt.match0
+			tt.match0 +
+			tt.match_f95 +
+			tt.match_f85 +
+			tt.match_f75 +
+			tt.match_f50
+
 		) / $editing_words_per_hour as po_billable_units,
 		[im_uom_hour] as po_task_uom_id
 	from	im_trans_tasks tt
@@ -317,12 +330,18 @@ if {$aggregate_tasks_p} {
 		t.po_task_type_id as task_type_id,
 		t.match_x,
 		t.match_rep,
+		t.match_perf,
+		t.match_cfr,
 		t.match100,
 		t.match95,
 		t.match85,
 		t.match75,
 		t.match50,
 		t.match0,
+		t.match_f95,
+		t.match_f85,
+		t.match_f75,
+		t.match_f50,
 		im_category_from_id(t.po_task_type_id) as task_type,
 		im_category_from_id(t.po_task_uom_id) as uom_name,
 		im_category_from_id(t.task_status_id) as task_status,
@@ -348,12 +367,18 @@ if {$aggregate_tasks_p} {
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Trg]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.XTr]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Rep]</td>
+	  <td class=rowtitle>[_ intranet-freelance-invoices.Perf]</td>
+	  <td class=rowtitle>[_ intranet-freelance-invoices.Cft]</td>
 	  <td class=rowtitle>100 %</td>
 	  <td class=rowtitle>95 %</td>
 	  <td class=rowtitle>85 %</td>
 	  <td class=rowtitle>75 %</td>
 	  <td class=rowtitle>50 %</td>
 	  <td class=rowtitle>0 %</td>
+	  <td class=rowtitle>f95 %</td>
+	  <td class=rowtitle>f85 %</td>
+	  <td class=rowtitle>f75 %</td>
+	  <td class=rowtitle>f50 %</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Units]</td>
 	  <td class=rowtitle>[_ intranet-freelance-invoices.Type]</td>
 	</tr>
@@ -386,12 +411,18 @@ if {$aggregate_tasks_p} {
 	  <td align=right>$target_language</td>
 	  <td align=right>$match_x</td>
 	  <td align=right>$match_rep</td>
+	  <td align=right>$match_perf</td>
+	  <td align=right>$match_cft</td>
 	  <td align=right>$match100</td>
 	  <td align=right>$match95</td>
 	  <td align=right>$match85</td>
 	  <td align=right>$match75</td>
 	  <td align=right>$match50</td>
 	  <td align=right>$match0</td>
+	  <td align=right>$match_f95</td>
+	  <td align=right>$match_f85</td>
+	  <td align=right>$match_f75</td>
+	  <td align=right>$match_f50</td>
 	  <td align=right><nobr>
 	    $billable_units $uom_name[im_gif help $po_comment]
 	  </nobr></td>
