@@ -424,7 +424,7 @@ if {$aggregate_tasks_p} {
 	  <td align=right>$match_f75</td>
 	  <td align=right>$match_f50</td>
 	  <td align=right><nobr>
-	    $billable_units $uom_name[im_gif help $po_comment]
+	    $billable_units $uom_name[im_gif -translate_p 0 help $po_comment]
 	  </nobr></td>
 	  <td>$task_type</td>
 	</tr>
