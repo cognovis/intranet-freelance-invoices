@@ -108,8 +108,9 @@ set default_tax 0
 set tax 0
 set note ""
 set default_payment_method_id ""
-set default_invoice_template_id ""
 
+# Set default_invoice_template_id at the end, otherwise value gets overwritten
+# set default_invoice_template_id ""
 
 # ---------------------------------------------------------------
 # Gather company data from the provider company_id
@@ -750,5 +751,11 @@ order by
 
 }
 
+# Set PO Template
+if { [im_column_exists im_companies default_po_template_id] && 3706 == $target_cost_type_id} {
+    set default_invoice_template_id [db_string get_data "select default_po_template_id from im_companies where company_id = :provider_id " -default ""]
+} else {
+    set default_invoice_template_id ""
+}
 
 db_release_unused_handles
